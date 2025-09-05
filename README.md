@@ -23,42 +23,68 @@ Para compilar VOP necesitas:
 
 ### 🔹 Instalación de dependencias
 #### Ubuntu / Debian / Linux Mint
-```sudo apt update```
-```sudo apt install build-essential cmake libncurses5-dev   libncursesw5-dev git```
+```bash 
+sudo apt update
+```
+```bash 
+sudo apt install build-essential cmake libncurses5-dev   libncursesw5-dev git
+```
 
-####Arch Linux / Manjaro
+#### Arch Linux / Manjaro
 ```sudo pacman -S base-devel cmake ncurses git```
 
-###Fedora / CentOS / RHEL
-```sudo dnf install @development-tools cmake ncurses-devel git```
+### Fedora / CentOS / RHEL
+```bash 
+sudo dnf install @development-tools cmake ncurses-devel git
+```
 
-####OpenSUSE
-```sudo zypper install -t pattern devel_C_C++```
-```sudo zypper install cmake ncurses-devel git```
+#### OpenSUSE
+```bash 
+sudo zypper install -t pattern devel_C_C++
+```
+```bash 
+sudo zypper install cmake ncurses-devel git
+```
 
 ## ⚙️ Compilación e instalación
 Clonamos el directorio
-```git clone https://github.com/StrangeKode/Villain-of-Process```
+```bash
+git clone https://github.com/StrangeKode/Villain-of-Process
+```
 
 Accedemos a la raiz
-```cd Villain-of-Process```
+```bash
+cd Villain-of-Process
+```
 
 Creamos los build
-```mkdir build && cd build```
-```cmake ..```
-```make```
-./vop```
+```bash 
+mkdir build && cd build
+```
+```bash
+cmake ..
+```
+```bash
+make
+```
+```bash
+./vop
+```
 
 ## 🔧 Instalación en el sistema
 Si queremos instalar vop en el PATH de nuestro sistema para usarlo facilmente podemos hacer
 
-```sudo make install```
+```bash
+sudo make install
+```
 
-##🚀 Usabilidad
+## 🚀 Usabilidad
 
 Ejecuta el programa:
 
-**vop**
+```bash
+vop
+```
 
 
 Verás:
@@ -73,7 +99,7 @@ Lista de procesos con:
 
 - Nombre del proceso
 
-##🛣 Roadmap
+##🛣  Roadmap
 
 -  Mostrar uso de memoria RAM.
 
@@ -83,12 +109,12 @@ Lista de procesos con:
 
 - Versión con colores personalizables.
 
-##🤝 Contribuciones
+## 🤝 Contribuciones
 
 ¡Las contribuciones son bienvenidas!
 Haz un fork del proyecto, crea una rama (feature/nueva-funcion) y abre un Pull Request 🚀.
 
-##📜 Licencia
+## 📜 Licencia
 
 Este proyecto se distribuye bajo la licencia GLP.
 Puedes usarlo, modificarlo y compartirlo libremente.

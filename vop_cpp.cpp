@@ -10,14 +10,14 @@
 #include <pwd.h>
 #include <ncurses.h>
 #include <algorithm>
-#include <limits>   // 🔹 Para std::numeric_limits
+#include <limits>
 
 struct Process {
     int pid;
     std::string user;
     std::string name;
     double cpu;
-    long mem;
+    long mem; // en KB
 };
 
 // 🔹 Leer UID de un proceso
@@ -43,6 +43,17 @@ std::string username_from_uid(uid_t uid) {
     return pw ? pw->pw_name : std::to_string(uid);
 }
 
+// 🔹 Leer memoria usada
+long read_memory(int pid) {
+    std::string path = "/proc/" + std::to_string(pid) + "/statm";
+    std::ifstream f(path);
+    long pages;
+    if (f >> pages) {
+        return pages * sysconf(_SC_PAGESIZE) / 1024; // KB
+    }
+    return 0;
+}
+
 // 🔹 Leer procesos
 std::vector<Process> get_processes() {
     std::vector<Process> processes;
@@ -62,10 +73,16 @@ std::vector<Process> get_processes() {
         uid_t uid = read_uid(pid);
         std::string user = username_from_uid(uid);
 
-        // 🔹 Para simplificar: cpu y memoria en 0
-        processes.push_back({pid, user, name, 0.0, 0});
+        long mem = read_memory(pid);
+
+        processes.push_back({pid, user, name, 0.0, mem});
     }
     closedir(dir);
+
+    // 🔹 Ordenar por memoria (default)
+    std::sort(processes.begin(), processes.end(),
+              [](auto &a, auto &b) { return a.mem > b.mem; });
+
     return processes;
 }
 
@@ -95,12 +112,17 @@ void draw_cpu_bars(int row_start) {
         int barlen = 20;
         int filled = (int)(usage/100.0 * barlen);
 
-        // 🔹 Construcción de la barra
-        std::string bar;
-        for (int i = 0; i < filled; i++) bar += "█";  // bloque lleno
-        for (int i = filled; i < barlen; i++) bar += " "; // espacio vacío
+        // 🔹 Selección de color
+        int color = 1;
+        if (usage > 80) color = 3;
+        else if (usage > 50) color = 2;
 
-        mvprintw(row, 0, "%-5s [%s] %5.1f%%", label.c_str(), bar.c_str(), usage);
+        attron(COLOR_PAIR(color));
+        std::string bar(filled, '█');
+        std::string empty(barlen - filled, ' ');
+        mvprintw(row, 0, "%-5s [%s%s] %5.1f%%", label.c_str(), bar.c_str(), empty.c_str(), usage);
+        attroff(COLOR_PAIR(color));
+
         row++;
     }
 }
@@ -118,6 +140,16 @@ int main() {
     noecho();
     cbreak();
     nodelay(stdscr, TRUE);
+    keypad(stdscr, TRUE);
+
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);   // CPU baja
+    init_pair(2, COLOR_YELLOW, COLOR_BLACK);  // CPU media
+    init_pair(3, COLOR_RED, COLOR_BLACK);     // CPU alta
+    init_pair(4, COLOR_CYAN, COLOR_BLACK);    // Encabezado
+    init_pair(5, COLOR_BLACK, COLOR_WHITE);   // Proceso seleccionado
+
+    int selected = 0;
 
     while (true) {
         clear();
@@ -131,20 +163,33 @@ int main() {
         // Procesos
         auto processes = get_processes();
         int row = 7;
-        mvprintw(row++, 0, "%-6s %-10s %-20s", "PID", "USER", "NAME");
+        attron(COLOR_PAIR(4));
+        mvprintw(row++, 0, "%-6s %-10s %-20s %-8s", "PID", "USER", "NAME", "MEM(KB)");
+        attroff(COLOR_PAIR(4));
+
         for (int i = 0; i < (int)processes.size() && i < 20; i++) {
             auto &p = processes[i];
-            mvprintw(row++, 0, "%-6d %-10s %-20s", p.pid, p.user.c_str(), p.name.c_str());
+            if (i == selected) {
+                attron(COLOR_PAIR(5));
+                mvprintw(row++, 0, "%-6d %-10s %-20s %-8ld", p.pid, p.user.c_str(), p.name.c_str(), p.mem);
+                attroff(COLOR_PAIR(5));
+            } else {
+                mvprintw(row++, 0, "%-6d %-10s %-20s %-8ld", p.pid, p.user.c_str(), p.name.c_str(), p.mem);
+            }
         }
 
         refresh();
-        usleep(500000);
+        usleep(200000);
 
         int ch = getch();
         if (ch == 'q') break;
+        if (ch == KEY_UP && selected > 0) selected--;
+        if (ch == KEY_DOWN && selected < 19) selected++;
+        if (ch == 'k' && selected < (int)processes.size()) {
+            kill(processes[selected].pid, SIGKILL);
+        }
     }
 
     endwin();
     return 0;
 }
-

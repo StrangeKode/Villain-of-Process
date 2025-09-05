@@ -31,7 +31,9 @@ sudo apt install build-essential cmake libncurses5-dev   libncursesw5-dev git
 ```
 
 #### Arch Linux / Manjaro
-```sudo pacman -S base-devel cmake ncurses git```
+```bash
+sudo pacman -S base-devel cmake ncurses git
+```
 
 ### Fedora / CentOS / RHEL
 ```bash 
@@ -99,7 +101,7 @@ Lista de procesos con:
 
 - Nombre del proceso
 
-##🛣  Roadmap
+## 🛣 Roadmap
 
 -  Mostrar uso de memoria RAM.
 

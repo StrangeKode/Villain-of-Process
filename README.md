@@ -10,8 +10,8 @@ sudo pacman -S base-devel cmake ncurses
 ## 🚀 Compilación
 
 ```bash
-git clone https://github.com/TU-USUARIO/VOP.git
-cd VOP
+git clone https://github.com/StrangeKode/Villain-of-Process
+cd Villain-of-Process
 mkdir build && cd build
 cmake ..
 make

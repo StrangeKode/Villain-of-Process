@@ -2,6 +2,11 @@
 
 Mini administrador de tareas estilo `htop`, hecho en **C++** con `ncurses`.
 
+Dependencia en Manjaro
+
+sudo pacman -S base-devel cmake ncurses
+
+
 ## 🚀 Compilación
 
 ```bash

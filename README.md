@@ -6,7 +6,7 @@
 VOP (**Villain of Process**) es un monitor de procesos minimalista para Linux, inspirado en `htop` pero mucho más ligero. Su objetivo es ofrecer una forma rápida y simple de visualizar el uso de CPU y los procesos activos en tu sistema, sin dependencias pesadas ni interfaces recargadas.
 
 
-##Características
+## Características
 - 📊 **Monitoreo en tiempo real** del uso de CPU por núcleo.
 - 🔎 **Listado de procesos activos** con PID, usuario y nombre.
 - 🪶 **Interfaz minimalista** basada en `ncurses`.

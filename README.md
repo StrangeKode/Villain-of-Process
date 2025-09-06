@@ -118,5 +118,5 @@ Haz un fork del proyecto, crea una rama (feature/nueva-funcion) y abre un Pull R
 
 ## 📜 Licencia
 
-Este proyecto se distribuye bajo la licencia GLP.
+Este proyecto se distribuye bajo la licencia GPL-3.0.
 Puedes usarlo, modificarlo y compartirlo libremente.

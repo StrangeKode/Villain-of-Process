@@ -3,8 +3,21 @@
 #include <unistd.h>
 #include <signal.h>
 
+/*
+ * Constructor de la clase Ui.
+ * Inicializa cualquier recurso necesario para la interfaz.
+ */
 Ui::Ui() {}
 
+/*
+ * Método: run
+ * Propósito: Ejecuta el bucle principal de la interfaz ncurses.
+ * Detalles:
+ *   - Inicializa ncurses y los colores.
+ *   - Muestra información de CPU y procesos.
+ *   - Permite navegar, seleccionar y finalizar procesos.
+ *   - Actualiza la pantalla periódicamente.
+ */
 void Ui::run() {
     initscr();
     noecho();
@@ -26,9 +39,11 @@ void Ui::run() {
     while (true) {
         clear();
 
+        // Dibuja barras de CPU y carga promedio
         cpu.drawCpuBars(0);
         cpu.drawLoadAvg(5);
 
+        // Obtiene y muestra la lista de procesos
         auto processes = pm.getProcesses();
         int row = 7;
         attron(COLOR_PAIR(4));
@@ -49,11 +64,13 @@ void Ui::run() {
         refresh();
         usleep(200000);
 
+        // Maneja la entrada del usuario
         int ch = getch();
         if (ch == 'q') break;
         if (ch == KEY_UP && selected > 0) selected--;
         if (ch == KEY_DOWN && selected < 19) selected++;
         if (ch == 'k' && selected < (int)processes.size()) {
+            // Finaliza el proceso seleccionado
             kill(processes[selected].pid, SIGKILL);
         }
     }

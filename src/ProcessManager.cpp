@@ -6,6 +6,12 @@
 #include <unistd.h>
 #include <algorithm>
 
+/*
+ * Método: readMemory
+ * Propósito: Lee la memoria utilizada por el proceso especificado.
+ * Parámetro: pid - Identificador del proceso.
+ * Retorno: Memoria utilizada en KB.
+ */
 long ProcessManager::readMemory(int pid) {
     std::string path = "/proc/" + std::to_string(pid) + "/statm";
     std::ifstream f(path);
@@ -16,6 +22,12 @@ long ProcessManager::readMemory(int pid) {
     return 0;
 }
 
+/*
+ * Método: getUsername
+ * Propósito: Obtiene el nombre de usuario propietario del proceso.
+ * Parámetro: pid - Identificador del proceso.
+ * Retorno: Nombre de usuario.
+ */
 std::string ProcessManager::getUsername(int pid) {
     std::string path = "/proc/" + std::to_string(pid) + "/status";
     std::ifstream f(path);
@@ -33,6 +45,12 @@ std::string ProcessManager::getUsername(int pid) {
     return pw ? pw->pw_name : std::to_string(uid);
 }
 
+/*
+ * Método: getProcesses
+ * Propósito: Obtiene la lista de procesos activos en el sistema.
+ * Retorno: Vector de objetos Process con la información de cada proceso.
+ * Detalles: Lee el directorio /proc, obtiene información relevante y la almacena en objetos Process.
+ */
 std::vector<Process> ProcessManager::getProcesses() {
     std::vector<Process> processes;
     DIR *dir = opendir("/proc");
@@ -55,6 +73,7 @@ std::vector<Process> ProcessManager::getProcesses() {
     }
     closedir(dir);
 
+    // Ordena los procesos por uso de memoria descendente
     std::sort(processes.begin(), processes.end(),
         [](auto &a, auto &b) { return a.mem > b.mem; });
 
